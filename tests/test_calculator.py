@@ -1,6 +1,6 @@
 # test_calculator.py
 
-from calculator import add, subtract
+from app.calculator import add, subtract
 
 def test_add():
     assert add(2, 3) == 5
