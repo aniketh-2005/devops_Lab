@@ -1,0 +1,24 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["Docker Build and Push"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+      
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
